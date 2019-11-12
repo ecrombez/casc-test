@@ -1,0 +1,425 @@
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - azureImds:
+          azureEnvName: "Azure"
+          description: "Local Managed Identities for Azure Resources"
+          id: "azure_service_principal"
+          scope: GLOBAL
+      - basicSSHUserPrivateKey:
+          id: "slave_ssh_key"
+          privateKeySource:
+            directEntry:
+              privateKey: 
+          scope: GLOBAL
+          username: "jenkins"
+      - string:
+          description: "Secret Token for cesgaz01"
+          id: "cesgaz01"
+          scope: GLOBAL
+          secret: 
+      - username:
+          description: "cesgaz01 GitHub Token"
+          id: "cesgaz01-GH-token"
+          password: 
+          scope: GLOBAL
+          username: "cesgaz01"
+      - usernamePassword:
+          description: "cesgaz01 VM admin"
+          id: "cesgaz01-vm-admin"
+          password: 
+          scope: GLOBAL
+          username: "cesgaz01"
+      - usernamePassword:
+          id: "jenkins_vm_agent_login"
+          password: 
+          scope: GLOBAL
+          username: "jvmlogin"
+      - azureStorageAccount:
+          blobEndpointURL: "https://blob.core.windows.net/"
+          description: "AZ storage build outputs"
+          id: "fordbuildoutputs"
+          scope: GLOBAL
+          storageAccountName: "fordbuildoutputs"
+          storageKey: 
+      - azure:
+          azureEnvironmentName: "Azure"
+          clientId: "264d93ec-87a6-4ca2-8df0-5841a96ac3d6"
+          clientSecret: 
+          description: "VM agent azure Service Principal"
+          id: "vmagent-azure-sp"
+          scope: GLOBAL
+          subscriptionId: "9e63c1b0-044c-487d-8b24-66420393f957"
+          tenant: "c990bb7a-51f4-439b-bd36-9c07fb1041c0"
+      - azureStorageAccount:
+          blobEndpointURL: "https://blob.core.windows.net/"
+          description: "AZ Build Outputs Blob"
+          id: "AZ-buildoutputs-blob"
+          scope: GLOBAL
+          storageAccountName: "fordbuildoutputs"
+          storageKey: 
+      - usernamePassword:
+          description: "Azure Container Registry"
+          id: "az-container-registry"
+          password: 
+          scope: GLOBAL
+          username: "fordacr"
+      - azureStorageAccount:
+          blobEndpointURL: "https://blob.core.windows.net/"
+          description: "Artifacts for builds"
+          id: "AZ-fordartifacts"
+          scope: GLOBAL
+          storageAccountName: "fordartifacts"
+          storageKey: 
+      - basicSSHUserPrivateKey:
+          description: "cesgaz01 SSH key"
+          id: "cesgaz01-sshkey"
+          privateKeySource:
+            directEntry:
+              privateKey: 
+          scope: GLOBAL
+          username: "cesgaz01"
+      - usernamePassword:
+          description: "cesgaz01 user for VMs with Docker"
+          id: "cesgaz01-vm-docker-user"
+          password: 
+          scope: GLOBAL
+          username: "cesgaz01"
+jenkins:
+  agentProtocols:
+  - "JNLP4-connect"
+  - "Ping"
+  authorizationStrategy:
+    github:
+      adminUserNames: "HGAYOSSO, AMOLNER, KMAUREY, JSENIA, ECROMBEZ, tcarmean, terickso,\
+        \ SPOPLAVS, EMAINO, ENADEAU4, j-murre4, j-efeish"
+      allowAnonymousJobStatusPermission: false
+      allowAnonymousReadPermission: false
+      allowCcTrayPermission: false
+      allowGithubWebHookPermission: true
+      authenticatedUserCreateJobPermission: false
+      authenticatedUserReadPermission: true
+      organizationNames: "PCCNFutureSwPipeline, fnv-pipeline, external-pipeline, sync-pipeline"
+      useRepositoryPermissions: false
+  clouds:
+  - aci:
+      credentialsId: "vmagent-azure-sp"
+      name: "AciAgents"
+      resourceGroup: "Ford-DevOps-Agents"
+      templates:
+      - command: "setup-sshd"
+        cpu: "4"
+        envVars:
+        - key: "JENKINS_SLAVE_SSH_PUBKEY"
+          value: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDe4zz83uTB1o0UjPaqJr029exi0Xp7cA7iLD2i4f2M8IyxZuZ1ZvsYUZhSzMAO29vaYBkIeTldzbfyzPSlBP3qyezK1THt3TZ9XMoX2Ym2yBEA4IeOTUQaQlYC5rQzzuL6PY93zbcryu3ZCgWiAJ1kIjbo8Z2zGiIXhdfMUinhJ9a0eccWOR9ccpfFDwLV7giU7XxjBe85c73UfMe/xUXMEVRRwXDUxnYvwjFXjf9lyAnaLIzzLQ3ItslwCWS4bJYAAcfFWp1+qj2h6rEGhkbHCVh5UyZ/Lsa2itSnawLHYN/FJdB4eywOCoCl9dtCrb46h/Aq0RsDl9U1cjiHRsh1M89k98nGeEaE46qO37ovT1N83QBfsdfXHeh5Sf/kxlN8pAu4NnK/XPaQM/yXsr0K+wOzhA8fGwrnmNa1UIaRxH1gXvm4I6k9OpDXzraPMhT4yB47ZsGIX6WoADzkVbijxRpgfU3YjOU7a463syqM8XRGG3qIkTAdXTQ5qI4A3mks3jPPMVIEzVPzUCCiV69AmHlqMzn5FmIDurinLYAbebCvk0EZk20h+jzqd3FZGMb0Ky2BJcuMGBQXI5LbN3yeU+IqPLO7h43sXvzZeXYgs9pZNINOc6u24OMPsV+EYe1qYq76l9N/OpXjz/fB2EtHH5rOnk0HPLVIAd8nBZQocw==\
+            \ root@Jenkins"
+        image: "jenkinsci/ssh-slave"
+        label: "linux-aci"
+        launchMethodType: "ssh"
+        memory: "16"
+        name: "aciagents"
+        osType: "Linux"
+        retentionStrategy: "containerOnce"
+        rootFs: "/home/jenkins"
+        timeout: 10
+      - command: "/run-jenkins-slave.sh ^${rootUrl} ^${secret} ^${nodeName} ford.eastus2.cloudapp.azure.com:5378"
+        cpu: "4"
+        image: "fordacr.azurecr.io/fnv-devops/asio"
+        label: "ngvm"
+        memory: "16"
+        name: "fnv"
+        osType: "Linux"
+        privateRegistryCredentials:
+        - credentialsId: "az-container-registry"
+          url: "https://fordacr.azurecr.io"
+        retentionStrategy: "containerOnce"
+        rootFs: "/proj/jenkins"
+        timeout: 10
+        volumes:
+        - credentialsId: "AZ-fordartifacts"
+          mountPath: "/proj/silver/git_mirror"
+          shareName: "gitmirror"
+        - credentialsId: "AZ-fordartifacts"
+          mountPath: "/proj/jenkins/dl_cache"
+          shareName: "nexusdlcache"
+        - credentialsId: "AZ-fordartifacts"
+          mountPath: "/proj/jenkins/ccache"
+          shareName: "ccache"
+      - command: "sleep 700"
+        cpu: "4"
+        image: "fordacr.azurecr.io/pcs/jenkins_jnlp_slave_pd"
+        label: "PCS"
+        memory: "16"
+        name: "PCS"
+        osType: "Linux"
+        privateRegistryCredentials:
+        - credentialsId: "az-container-registry"
+          url: "https://fordacr.azurecr.io"
+        retentionStrategy: "containerOnce"
+        rootFs: "/home/jenkins"
+        timeout: 10
+      - command: "jenkins-slave -headless -disableHttpsCertValidation -url ^${rootUrl}\
+          \ -tunnel ford.eastus2.cloudapp.azure.com:5378 ^${secret} ^${nodeName} "
+        cpu: "1"
+        image: "jenkinsci/jnlp-slave"
+        label: "linuxbasic"
+        memory: "1.5"
+        name: "linuxbasicjnlpslave"
+        osType: "Linux"
+        retentionStrategy: "containerOnce"
+        rootFs: "/home/jenkins"
+        timeout: 10
+  - azureVM:
+      azureCredentialsId: "vmagent-azure-sp"
+      cloudName: "VMAgents"
+      configurationStatus: "pass"
+      deploymentTimeout: 1200
+      existingResourceGroupName: "Ford-DevOps-Agents"
+      maxVirtualMachinesLimit: 10
+      resourceGroupReferenceType: "existing"
+      vmTemplates:
+      - agentLaunchMethod: "SSH"
+        builtInImage: "Windows Server 2016"
+        credentialsId: "cesgaz01-vm-docker-user"
+        diskType: "managed"
+        doNotUseMachineIfInitFails: true
+        enableMSI: false
+        enableUAMI: false
+        executeInitScriptAsRoot: true
+        existingStorageAccountName: "forddevopsdisks"
+        imageReference:
+          galleryImageDefinition: "ubuntu-docker-vm"
+          galleryImageVersion: "1.0.0"
+          galleryName: "FordImages"
+          galleryResourceGroup: "Ford-DevOps-Images"
+        imageTopLevelType: "advanced"
+        initScript: |+
+          STORAGEACCT="fordartifacts"
+          STORAGEKEY=
+          sudo mkdir -p /proj/silver/git_mirror
+          sudo mount -t cifs //$STORAGEACCT.file.core.windows.net/gitmirror /proj/silver/git_mirror -o vers=3.0,username=$STORAGEACCT,password=$STORAGEKEY,dir_mode=0777,file_mode=0777,serverino
+          sudo mkdir -p /proj/jenkins/dl_cache
+          sudo mount -t cifs //$STORAGEACCT.file.core.windows.net/nexusdlcache /proj/jenkins/dl_cache -o vers=3.0,username=$STORAGEACCT,password=$STORAGEKEY,dir_mode=0777,file_mode=0777,serverino
+          sudo mkdir -p /proj/jenkins/ccache
+          sudo mount -t cifs //$STORAGEACCT.file.core.windows.net/ccache /proj/jenkins/ccache -o vers=3.0,username=$STORAGEACCT,password=$STORAGEKEY,dir_mode=0777,file_mode=0777,serverino
+          usermod -aG docker cesgaz01
+          ACRUSER="fordacr"
+          ACRKEY=
+          ACR="fordacr.azurecr.io"
+          sudo -u cesgaz01 docker login -u ^${ACRUSER} -p ^${ACRKEY} ^${ACR}
+          env > /tmp/env.txt
+        installDocker: false
+        installGit: false
+        installMaven: false
+        labels: "linux-vm"
+        location: "East US 2"
+        newStorageAccountName: "forddevopsdisks"
+        noOfParallelJobs: 1
+        osDiskSize: 30
+        osType: "Linux"
+        preInstallSsh: false
+        retentionStrategy:
+          azureVMCloudRetentionStrategy:
+            idleTerminationMinutes: 60
+        shutdownOnIdle: false
+        storageAccountNameReferenceType: "new"
+        storageAccountType: "Premium_LRS"
+        subnetName: "jenkins"
+        templateDisabled: false
+        templateName: "vmagent"
+        usageMode: "Use this node as much as possible"
+        usePrivateIP: true
+        virtualMachineSize: "Standard_DS13"
+        virtualNetworkName: "jenkins-vnet"
+        virtualNetworkResourceGroupName: "Ford-DevOps"
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: true
+  disableRememberMe: false
+  markupFormatter: "plainText"
+  mode: NORMAL
+  myViewsTabBar: "standard"
+  nodes:
+  - permanent:
+      labelString: "bancc"
+      launcher:
+        jnlp:
+          tunnel: "ford.eastus2.cloudapp.azure.com:5378"
+          workDirSettings:
+            disabled: false
+            failIfWorkDirIsMissing: false
+            internalDir: "remoting"
+            workDirPath: "/workspace"
+      name: "banccvm1"
+      numExecutors: 1
+      remoteFS: "c:\\jenkins"
+      retentionStrategy: "always"
+  - permanent:
+      labelString: "bancc"
+      launcher:
+        jnlp:
+          tunnel: "ford.eastus2.cloudapp.azure.com:5378"
+          workDirSettings:
+            disabled: false
+            failIfWorkDirIsMissing: false
+            internalDir: "remoting"
+            workDirPath: "/workspace"
+      mode: EXCLUSIVE
+      name: "banccvm2"
+      numExecutors: 1
+      remoteFS: "c:\\jenkins"
+      retentionStrategy: "always"
+  numExecutors: 2
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 5
+  remotingSecurity:
+    enabled: true
+  scmCheckoutRetryCount: 0
+  securityRealm:
+    github:
+      clientID: "9cb7c36d0e1525322441"
+      clientSecret: 
+      githubApiUri: "https://github.ford.com/api/v3"
+      githubWebUri: "https://github.ford.com"
+      oauthScopes: "read:org,user:email,repo"
+  slaveAgentPort: 5378
+  updateCenter:
+    sites:
+    - id: "default"
+      url: "https://updates.jenkins.io/update-center.json"
+  views:
+  - all:
+      name: "all"
+  viewsTabBar: "standard"
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+  downloadSettings:
+    useBrowser: false
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: true
+  sSHD:
+    port: -1
+  scriptApproval:
+    approvedSignatures:
+    - "staticMethod groovy.time.TimeCategory minus java.util.Date java.util.Date"
+    - "staticMethod java.lang.System getenv java.lang.String"
+unclassified:
+  appInsightsGlobalConfig:
+    appInsightsEnabled: false
+  buildStepOperation:
+    enabled: false
+  extendedEmailPublisher:
+    adminRequiredForTemplateTesting: false
+    allowUnregisteredEnabled: false
+    charset: "UTF-8"
+    debugMode: false
+    defaultBody: "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:\r\n\r\nCheck\
+      \ console output at $BUILD_URL to view the results."
+    defaultContentType: "text/plain"
+    defaultSubject: "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!"
+    maxAttachmentSize: -1
+    maxAttachmentSizeMb: 0
+    precedenceBulk: false
+    useSsl: false
+    watchingEnabled: false
+  gitHubConfiguration:
+    endpoints:
+    - apiUri: "https://github.ford.com/api/v3"
+      name: "GitHub at Ford"
+  gitHubPluginConfig:
+    configs:
+    - apiUrl: "https://github.ford.com/api/v3"
+      credentialsId: "cesgaz01"
+      name: "Ford GHES"
+    hookUrl: "https://ford-devops.eastus2.cloudapp.azure.com/github-webhook/"
+  gitSCM:
+    createAccountBasedOnEmail: false
+  githubPullRequests:
+    actualiseOnFactory: false
+  globalLibraries:
+    libraries:
+    - defaultVersion: "master"
+      includeInChangesets: false
+      name: "PipelineLibrary"
+      retriever:
+        modernSCM:
+          scm:
+            github:
+              configuredByUrl: true
+              credentialsId: "cesgaz01-GH-token"
+              id: "e8c21881-b315-43d4-adbf-501af53dce76"
+              repoOwner: "PCCNFutureSwPipeline"
+              repository: "Libraries"
+              repositoryUrl: "https://github.ford.com/PCCNFutureSwPipeline/Libraries"
+              traits:
+              - gitHubBranchDiscovery:
+                  strategyId: 1
+              - originPullRequestDiscoveryTrait:
+                  strategyId: 1
+              - gitHubForkDiscovery:
+                  strategyId: 1
+                  trust: "gitHubTrustPermissions"
+  globalSettings:
+    failOnCorrupt: false
+    noAuthors: false
+    quietMode: false
+  location:
+    adminAddress: "cesgaz01@ford.com"
+    url: "https://ford-devops.eastus2.cloudapp.azure.com/"
+  mailer:
+    charset: "UTF-8"
+    useSsl: false
+  mavenModuleSet:
+    localRepository: "default"
+  pollSCM:
+    pollingThreadCount: 10
+  slackNotifier:
+    botUser: false
+    sendAsText: false
+  splunkJenkinsInstallation:
+    enabled: false
+    maxEventsBatchSize: 262144
+    metadataHost: "ford-devops.eastus2.cloudapp.azure.com"
+    port: 8088
+    rawEventEnabled: true
+    retriesOnError: 3
+    scriptContent: |-
+      //send job metadata and junit reports with page size set to 50 (each event contains max 50 test cases)
+      splunkins.sendTestReport(50)
+      //send coverage, each event contains max 50 class metrics
+      splunkins.sendCoverageReport(50)
+      //send all logs from workspace to splunk, with each file size limits to 10MB
+      splunkins.archive("**/*.log", null, false, "10MB")
+      //end
+    useSSL: true
+  teamPluginGlobalConfig:
+    configFolderPerNode: false
+    enableTeamPushTriggerForAllJobs: false
+    enableTeamStatusForAllJobs: false
+    userAccountMapper: "domain"
+  timestamperConfig:
+    allPipelines: false
+    elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
+    systemTimeFormat: "'<b>'HH:mm:ss'</b> '"
+  upstream:
+    globalUpstreamFilterStrategy: UseOldest
+  whitelist:
+    enabled: false
+tool:
+  git:
+    installations:
+    - home: "git"
+      name: "Default"
+  pipelineMaven:
+    triggerDownstreamUponResultAborted: false
+    triggerDownstreamUponResultFailure: false
+    triggerDownstreamUponResultNotBuilt: false
+    triggerDownstreamUponResultSuccess: true
+    triggerDownstreamUponResultUnstable: false
